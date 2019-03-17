@@ -9,7 +9,7 @@ phases:
       - IMAGE_NAME="apidemo"
       - REPOSITORY_URI=328458102011.dkr.ecr.us-east-1.amazonaws.com/api-demo
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=${COMMIT_HASH:=latest}
+      - IMAGE_TAG=prod_${COMMIT_HASH:=latest}
     #  - IMAGE_TAG=prod_$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - cd services
   build:
@@ -24,7 +24,7 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-    #  - echo Writing image definitions file...
-    #  - printf '[{"name":"imageapi-container","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
-#artifacts:
-#SSS    files: imagedefinitions.json
+      - echo Writing image definitions file...
+      - printf '[{"name":"apidemo-container","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+artifacts:
+      files: imagedefinitions.json
